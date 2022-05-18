@@ -9,6 +9,8 @@ select * from albums;
 select COUNT(id) from albums;
 -- 31
 
+describe albums;
+
 select count(distinct artist)
 from albums;
 -- 23
@@ -36,7 +38,7 @@ select max(release_date) from albums;
 select * from albums
 where artist = 'Pink Floyd';
 
-select release_year from albums
+select release_date from albums
 where name = 'Sgt. Pepper \'s Lonely Hearts Club Band';
 -- 2011
 
@@ -45,10 +47,12 @@ where name = 'Nevermind';
 -- 'Grunge, Alternative rock'
 
 select * from albums
-where release_date like '%1990%';
+where release_date like '%199%';
 
 select * from albums
 where sales < 20;
 
 select * from albums
-where genre like 'Rock%';
+where genre = 'Rock';
+
+describe albums;
