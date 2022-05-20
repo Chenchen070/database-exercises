@@ -15,7 +15,9 @@ select *, datediff(now(), hire_date) as days from employees
 where hire_date like '199%' and birth_date like '%12-25';
 
 -- Find the smallest and largest current salary from the salaries table.
-select min(salary) from employees.salaries;
+select min(salary),max(salary) from salaries;
 -- 38623
-select max(salary) from employees.salaries;
 -- 158220
+
+select lower(concat(substr(first_name,1,1),substr(last_name,1,4),
+'_',substr(birth_date,6,2),substr(birth_date,3,2))) as username from employees;
