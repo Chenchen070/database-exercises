@@ -50,7 +50,7 @@ select title as 'Title', count(*) as Count from titles as t
 	join dept_emp as de
 	on de.emp_no = t.emp_no
 		join departments as d
-        on d.dept_no = de.dept_no
+			on d.dept_no = de.dept_no
 	where t.to_date = '9999-01-01' 
     and dept_name = 'Customer Service'
 group by title
@@ -84,43 +84,46 @@ order by dept_no;
 select dept_name, AVG(salary) as average_salary 
 from salaries as s
 	join dept_emp as de
-    on de.emp_no = s.emp_no
+		on de.emp_no = s.emp_no
 	join departments as d
-    on d.dept_no = de.dept_no
+		on d.dept_no = de.dept_no
 where de.to_date = '9999-01-01'
 group by dept_name
-order by average_salary desc;
+order by average_salary desc
+limit 1;
     
 -- 8 Who is the highest paid employee in the Marketing department?
 select first_name, last_name, salary from employees as e
 	join salaries as s
-    on s.emp_no = e.emp_no
+		on s.emp_no = e.emp_no
 	join dept_emp as de
-    on de.emp_no = e.emp_no
+		on de.emp_no = e.emp_no
     join departments as d
-    on d.dept_no = de.dept_no
+		on d.dept_no = de.dept_no
 where dept_name = 'Marketing'
-order by salary desc;
+order by salary desc
+limit 1;
 
 -- 9 Which current department manager has the highest salary?
 select first_name, last_name, salary, dept_name
 from employees as e
 	join salaries as s
-    on s.emp_no = e.emp_no
+		on s.emp_no = e.emp_no
     join dept_manager as de
-    on de.emp_no = e.emp_no
+		on de.emp_no = e.emp_no
     join departments as d
-    on d.dept_no = de.dept_no
+		on d.dept_no = de.dept_no
 where de.to_date = '9999-01-01'
-order by salary desc;
+order by salary desc
+limit 1;
 
 -- 10 Determine the average salary for each department. Use all salary information and round your results.
 select dept_name, avg(salary) as average_salary 
 from salaries as s
 	join dept_emp as de
-    on de.emp_no = s.emp_no
+		on de.emp_no = s.emp_no
     join departments as d
-    on d.dept_no = de.dept_no
+		on d.dept_no = de.dept_no
 group by dept_name
 order by average_salary desc;
 
@@ -130,10 +133,19 @@ select concat(first_name, ' ', last_name) as 'Employee Name',
 dept_name as 'Department Name'
 from employees as e
 	join dept_emp as de
-    on de.emp_no = e.emp_no
+		on de.emp_no = e.emp_no
     join departments as d
-    on d.dept_no = de.dept_no
-where de.to_date = '9999-01-01'
+		on d.dept_no = de.dept_no
+where de.to_date = '9999-01-01';
+
+select dept_name, concat(first_name, ' ', last_name) as 'Manager Name'
+from departments as d
+	join dept_manager as de
+		on d.dept_no = de.dept_no
+    join employees as e
+		on de.emp_no = e.emp_no
+where de.to_date = '9999-01-01';
+    
 
 
 
