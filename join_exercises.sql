@@ -128,24 +128,40 @@ group by dept_name
 order by average_salary desc;
 
 -- 11 Find the names of all current employees, their department name, and their current manager's name.
-
-select concat(first_name, ' ', last_name) as 'Employee Name', 
-dept_name as 'Department Name'
-from employees as e
-	join dept_emp as de
-		on de.emp_no = e.emp_no
-    join departments as d
-		on d.dept_no = de.dept_no
-where de.to_date = '9999-01-01';
-
-select dept_name, concat(first_name, ' ', last_name) as 'Manager Name'
-from departments as d
-	join dept_manager as de
-		on d.dept_no = de.dept_no
-    join employees as e
-		on de.emp_no = e.emp_no
-where de.to_date = '9999-01-01';
     
+SELECT
+	CONCAT(e.first_name, " ", e.last_name) AS "Employee NAME",
+	d.dept_name AS "Department NAME",
+	mn.manager_name AS "Manager NAME"
+FROM employees AS e
+JOIN dept_emp AS de ON de.emp_no = e.emp_no
+JOIN departments AS d ON d.dept_no = de.dept_no
+LEFT JOIN
+	(SELECT
+		CONCAT(e.first_name, " ", e.last_name) AS manager_name, dm.dept_no
+		FROM dept_manager AS dm
+		JOIN employees AS e ON e.emp_no = dm.emp_no
+		WHERE dm.to_date > NOW()) AS mn ON mn.dept_no = de.dept_no
+WHERE de.to_date > NOW();
 
-
-
+-- 12 Find the highest paid employee in each department
+ 
+SELECT 
+ 	CONCAT(e.first_name,' ',e.last_name) AS "Employee NAME", 
+ 	d.dept_name AS "Department NAME",
+ 	ms.max_salary_by_department AS "Salary"
+ FROM employees e
+ JOIN dept_emp de ON de.emp_no = e.emp_no
+ JOIN departments d ON de.dept_no = d.dept_no 
+ JOIN salaries s ON e.emp_no = s.emp_no
+ JOIN (
+ 	SELECT
+ 		MAX(s.salary) AS "max_salary_by_department",
+ 		d.dept_name 
+	FROM salaries AS s
+	JOIN employees AS e ON e.emp_no = s.emp_no
+	JOIN dept_emp AS de ON de.emp_no = e.emp_no
+	JOIN departments AS d ON d.dept_no = de.dept_no
+	GROUP BY d.dept_name
+		) AS ms ON ms.dept_name = d.dept_name AND ms.max_salary_by_department = s.salary
+ WHERE de.to_date > NOW() AND s.to_date > NOW();
