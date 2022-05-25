@@ -50,7 +50,23 @@ where password is not null;
 
 -- 4 IN operator
 -- a. Select the phone and district columns from the address table for addresses in California, England, Taipei, or West Java.
+select phone, district from address
+where district in ('California', 'England', 'Taipei', 'West Java');
 
+-- b. Select the payment id, amount, and payment date columns from the payment table for payments made on 05/25/2005, 05/27/2005, and 05/29/2005. (Use the IN operator and the DATE function, instead of the AND operator as in previous exercises.)
+select payment_id, amount, payment_date from payment
+where date(payment_date) in (date('2005-05-25'), date("2005-05-27"), date("2005-05-29"));
 
--- Select the payment id, amount, and payment date columns from the payment table for payments made on 05/25/2005, 05/27/2005, and 05/29/2005. (Use the IN operator and the DATE function, instead of the AND operator as in previous exercises.)
--- Select all columns from the film table for films rated G, PG-13 or NC-17.
+-- c. Select all columns from the film table for films rated G, PG-13 or NC-17.
+select * from film
+where rating in ('G', 'PG-13', 'NC-17');
+
+# 5. BETWEEN operator
+-- a. Select all columns from the payment table for payments made between midnight 05/25/2005 and 1 second before midnight 05/26/2005.
+select * from payment
+where date(payment_date) between '2005-05-25 00:00:00' and '2005-05-25 23:59:59';
+
+-- b. Select the film_id, title, and descrition columns from the film table for films where the length of the description is between 100 and 120.
+select film_id, description from film
+where length between 100 and 120;
+
