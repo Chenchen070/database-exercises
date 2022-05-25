@@ -1,36 +1,3 @@
-use employees;
-
--- boolean match/cast
-select dept_name, dept_name = 'Research' as is_research
-from departments;
-
--- if()
--- use this function if you evaluating to a true/false outcome
-
-select dept_name, if (dept_name = 'Research', True, False)
-as is_research from departments;
-
--- case: option one
--- use if you have more than 2 values
--- use if you need more flexibility in your conditional text
-select dept_name, 
-	case dept_name
-		when 'Research' then 1
-        else 0
-	end as is_research
-from departments;
-
--- case :option two
-select dept_name,
-case
-	when dept_name in ('Marketing','Sales') then 'Money Makers'
-    when dept_name like '%research%' or dept_name like '%resources%' then 'People People'
-    else 'Others'
-end as department_categories
-from departments;
-
--- using case statements to create a pivot table
-
 -- exercises:
 #1. Write a query that returns all employees, their department number, their start date, their end date, and a new column 'is_current_employee' that is a 1 if the employee is still with the company and 0 if not.
 use employees;
@@ -50,6 +17,18 @@ select concat(first_name,' ', last_name),
 	end as 'alpha_group'
 from employees;
 
+# review:
+SELECT
+    first_name,
+    last_name,
+    LEFT(last_name, 1) AS first_letter_of_last_name,
+    CASE
+        WHEN LEFT(last_name, 1) <= 'H' THEN 'A-H'
+        WHEN SUBSTR(last_name, 1, 1) <= 'Q' THEN 'I-Q'
+        WHEN LEFT(last_name, 1) <= 'Z' THEN 'R-Z'
+    END AS alpha_group
+FROM employees;
+
 # 3. How many employees (current or previous) were born in each decade?
 SELECT 
 		CASE 
@@ -58,6 +37,19 @@ SELECT
 END AS 'decade_born', Count(*) AS number_of_born
 FROM employees
 GROUP BY decade_born;
+
+# review:
+SELECT
+    COUNT(CASE WHEN birth_date BETWEEN '1950-01-01' AND '1959-12-31' THEN birth_date ELSE NULL END) AS '50s',
+    COUNT(CASE WHEN birth_date BETWEEN '1960-01-01' AND '1969-12-31' THEN birth_date ELSE NULL END) AS '60s'
+FROM employees;
+
+-- Another way:
+SELECT
+    CONCAT(SUBSTR(birth_date, 1, 3), '0') as decade,
+    COUNT(*)
+FROM employees
+GROUP BY decade;
 
 # 4. What is the current average salary for each of the following department groups: R&D, Sales & Marketing, Prod & QM, Finance & HR, Customer Service?
 select distinct case
@@ -72,5 +64,26 @@ from departments
     join salaries using (emp_no)
 where dept_emp.to_date > now() and salaries.to_date > now()
 group by department_group;
+
+-- #1 but more complicated
+
+SELECT 
+	de.emp_no,
+	dept_no,
+	hire_date,
+    from_date,
+	to_date,
+	IF(to_date > CURDATE(), 1, 0) AS current_employee
+FROM dept_emp AS de
+JOIN (SELECT 
+			emp_no,
+			MAX(to_date) AS max_date
+		FROM dept_emp
+		GROUP BY emp_no) as last_dept 
+		ON de.emp_no = last_dept.emp_no
+			AND de.to_date = last_dept.max_date
+JOIN employees AS e ON e.emp_no = de.emp_no;
+
+
 
 
